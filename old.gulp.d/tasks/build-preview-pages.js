@@ -1,20 +1,20 @@
 'use strict'
 
-import AsciiDoctor from '@asciidoctor/core'
-import fs from 'fs-extra'
-import handlebars from 'handlebars'
-import merge from 'merge-stream'
-import ospath from 'path'
-import requireFromString from 'require-from-string'
-import { Transform } from 'stream'
-import vfs from 'vinyl-fs'
-import yaml from 'js-yaml'
-
+const Asciidoctor = require('@asciidoctor/core')()
+const fs = require('fs-extra')
+const handlebars = require('handlebars')
+const merge = require('merge-stream')
+const ospath = require('path')
 const path = ospath.posix
+const requireFromString = require('require-from-string')
+const { Transform } = require('stream')
 const map = (transform = () => {}, flush = undefined) => new Transform({ objectMode: true, transform, flush })
+const vfs = require('vinyl-fs')
+const yaml = require('js-yaml')
+
 const ASCIIDOC_ATTRIBUTES = { experimental: '', icons: 'font', sectanchors: '', 'source-highlighter': 'highlight.js' }
 
-export default (src, previewSrc, previewDest, sink = () => map()) => (done) =>
+module.exports = (src, previewSrc, previewDest, sink = () => map()) => (done) =>
   Promise.all([
     loadSampleUiModel(previewSrc),
     toPromise(
@@ -72,7 +72,7 @@ export default (src, previewSrc, previewDest, sink = () => map()) => (done) =>
         .pipe(vfs.dest(previewDest))
         .on('error', done)
         .pipe(sink())
-  )
+    )
 
 function loadSampleUiModel (src) {
   return fs.readFile(ospath.join(src, 'ui-model.yml'), 'utf8').then((contents) => yaml.safeLoad(contents))

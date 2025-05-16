@@ -1,19 +1,16 @@
 'use strict'
 
-import ospath from 'path'
-import vfs from 'vinyl-fs'
-import vscode_gult from "@vscode/gulp-vinyl-zip"
-import gulp_vinyl_zip from "gulp-vinyl-zip"
-
+const ospath = require('path')
+const vfs = require('vinyl-fs')
 const zip = (() => {
   try {
-    return vscode_gult
+    return require('@vscode/gulp-vinyl-zip')
   } catch {
-    return gulp_vinyl_zip
+    return require('gulp-vinyl-zip')
   }
 })()
 
-export default (src, dest, bundleName, onFinish) => () =>
+module.exports = (src, dest, bundleName, onFinish) => () =>
   vfs
     .src('**/*', { base: src, cwd: src, dot: true })
     .pipe(zip.dest(ospath.join(dest, `${bundleName}-bundle.zip`)))

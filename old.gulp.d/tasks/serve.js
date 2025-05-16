@@ -1,7 +1,7 @@
 'use strict'
 
-import connect from 'gulp-connect'
-import os from 'os'
+const connect = require('gulp-connect')
+const os = require('os')
 
 const ANY_HOST = '0.0.0.0'
 const URL_RX = /(https?):\/\/(?:[^/: ]+)(:\d+)?/

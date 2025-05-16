@@ -1,9 +1,9 @@
 'use strict'
 
-import stylelint from 'gulp-stylelint'
-import vfs from 'vinyl-fs'
+const stylelint = require('gulp-stylelint')
+const vfs = require('vinyl-fs')
 
-export default (files) => (done) =>
+module.exports = (files) => (done) =>
   vfs
     .src(files)
     .pipe(stylelint({ reporters: [{ formatter: 'string', console: true }], failAfterError: true }))

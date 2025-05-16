@@ -1,29 +1,26 @@
 'use strict'
 
-import autoprefixer from 'autoprefixer'
-import browserify from 'browserify'
-import concat from 'gulp-concat'
-import cssnano from 'cssnano'
-import fs from 'fs-extra'
-import imagemin from 'gulp-imagemin'
-import merge from 'merge-stream'
-import ospath from 'path'
-
+const autoprefixer = require('autoprefixer')
+const browserify = require('browserify')
+const concat = require('gulp-concat')
+const cssnano = require('cssnano')
+const fs = require('fs-extra')
+const imagemin = require('gulp-imagemin')
+const merge = require('merge-stream')
+const ospath = require('path')
 const path = ospath.posix
-
-import postcss from 'gulp-postcss'
-import postcssImport from 'postcss-import'
-import postcssUrl from 'postcss-url'
-import postcssVar from 'postcss-custom-properties'
-import { Transform } from 'stream'
-
+const postcss = require('gulp-postcss')
+const postcssCalc = require('postcss-calc')
+const postcssImport = require('postcss-import')
+const postcssUrl = require('postcss-url')
+const postcssVar = require('postcss-custom-properties')
+const { Transform } = require('stream')
 const map = (transform) => new Transform({ objectMode: true, transform })
 const through = () => map((file, enc, next) => next(null, file))
+const uglify = require('gulp-uglify')
+const vfs = require('vinyl-fs')
 
-import uglify from 'gulp-uglify'
-import vfs from 'vinyl-fs'
-
-export default (src, dest, preview) => () => {
+module.exports = (src, dest, preview) => () => {
   const opts = { base: src, cwd: src }
   const sourcemaps = preview || process.env.SOURCEMAPS === 'true'
   const postcssPlugins = [
