@@ -1,26 +1,27 @@
 'use strict'
 
-const autoprefixer = require('autoprefixer')
-const browserify = require('browserify')
-const concat = require('gulp-concat')
-const cssnano = require('cssnano')
-const fs = require('fs-extra')
-const imagemin = require('gulp-imagemin')
-const merge = require('merge-stream')
-const ospath = require('path')
+import autoprefixer from 'autoprefixer'
+import browserify from 'browserify'
+import concat from 'gulp-concat'
+import cssnano from 'cssnano'
+import fs from 'fs-extra'
+import imagemin from 'gulp-imagemin'
+import merge from 'merge-stream'
+import ospath from 'path'
+import postcss from 'gulp-postcss'
+import postcssCalc from 'postcss-calc'
+import postcssImport from 'postcss-import'
+import postcssUrl from 'postcss-url'
+import postcssVar from 'postcss-custom-properties'
+import { Transform } from 'stream'
+import uglify from 'gulp-uglify'
+import vfs from 'vinyl-fs'
+
 const path = ospath.posix
-const postcss = require('gulp-postcss')
-const postcssCalc = require('postcss-calc')
-const postcssImport = require('postcss-import')
-const postcssUrl = require('postcss-url')
-const postcssVar = require('postcss-custom-properties')
-const { Transform } = require('stream')
 const map = (transform) => new Transform({ objectMode: true, transform })
 const through = () => map((file, enc, next) => next(null, file))
-const uglify = require('gulp-uglify')
-const vfs = require('vinyl-fs')
 
-module.exports = (src, dest, preview) => () => {
+export default (src, dest, preview) => () => {
   const opts = { base: src, cwd: src }
   const sourcemaps = preview || process.env.SOURCEMAPS === 'true'
   const postcssPlugins = [
@@ -37,9 +38,10 @@ module.exports = (src, dest, preview) => () => {
     postcssUrl([
       {
         filter: (asset) => new RegExp('^[~][^/]*(?:font|typeface)[^/]*/.*/files/.+[.](?:ttf|woff2?)$').test(asset.url),
-        url: (asset) => {
+        url: async (asset) => {
           const relpath = asset.pathname.slice(1)
-          const abspath = require.resolve(relpath)
+          const { fileURLToPath } = await import('url')
+          const abspath = fileURLToPath(new URL(relpath, import.meta.url))
           const basename = ospath.basename(abspath)
           const destpath = ospath.join(dest, 'font', basename)
           if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)

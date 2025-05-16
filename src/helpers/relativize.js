@@ -1,8 +1,8 @@
 'use strict'
 
-const { posix: path } = require('path')
+import { posix as path } from 'path'
 
-module.exports = (to, from, ctx) => {
+export default (to, from, ctx) => {
   if (!to) return '#'
   if (to.charAt() !== '/') return to
   // NOTE only legacy invocation provides both to and from

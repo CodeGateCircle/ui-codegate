@@ -1,13 +1,13 @@
 'use strict'
 
-const metadata = require('undertaker/lib/helpers/metadata')
-const { watch } = require('gulp')
+import getMetadata from 'undertaker/lib/helpers/metadata.js'
+import { watch } from 'gulp'
 
-module.exports = ({ name, desc, opts, call: fn, loop }) => {
+export default ({ name, desc, opts, call: fn, loop }) => {
   if (name) {
     const displayName = fn.displayName
     if (displayName === '<series>' || displayName === '<parallel>') {
-      metadata.get(fn).tree.label = `${displayName} ${name}`
+      getMetadata(fn).tree.label = `${displayName} ${name}`
     }
     fn.displayName = name
   }

@@ -1,14 +1,16 @@
 'use strict'
 
-module.exports = (numOfItems, { data }) => {
+import { createRequire } from 'module'
+
+let buildPageUiModel
+
+export default (numOfItems, { data }) => {
   const { contentCatalog, site } = data.root
   if (!contentCatalog) return
   const rawPages = getDatedReleaseNotesRawPages(contentCatalog)
   const pageUiModels = turnRawPagesIntoPageUiModels(site, rawPages, contentCatalog)
   return getMostRecentlyUpdatedPages(pageUiModels, numOfItems)
 }
-
-let buildPageUiModel
 
 function getDatedReleaseNotesRawPages (contentCatalog) {
   return contentCatalog.getPages(({ asciidoc, out }) => {
@@ -31,7 +33,11 @@ function hasRevDate (attributes) {
 }
 
 function turnRawPagesIntoPageUiModels (site, pages, contentCatalog) {
-  buildPageUiModel ??= module.parent.require('@antora/page-composer/build-ui-model').buildPageUiModel
+  if (!buildPageUiModel) {
+    const require = createRequire(import.meta.url)
+    const parentModule = require('@antora/page-composer/build-ui-model')
+    buildPageUiModel = parentModule.buildPageUiModel
+  }
   return pages
     .map((page) => buildPageUiModel(site, page, contentCatalog))
     .filter((page) => isValidDate(page.attributes?.revdate))

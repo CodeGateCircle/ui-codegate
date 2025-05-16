@@ -1,17 +1,22 @@
 'use strict'
 
-const ospath = require('path')
-const vfs = require('vinyl-fs')
-const zip = (() => {
-  try {
-    return require('@vscode/gulp-vinyl-zip')
-  } catch {
-    return require('gulp-vinyl-zip')
-  }
-})()
+import ospath from 'path'
+import vfs from 'vinyl-fs'
 
-module.exports = (src, dest, bundleName, onFinish) => () =>
-  vfs
+// 動的インポートに変換
+const getZip = async () => {
+  try {
+    return await import('@vscode/gulp-vinyl-zip')
+  } catch {
+    return await import('gulp-vinyl-zip')
+  }
+}
+
+export default (src, dest, bundleName, onFinish) => async () => {
+  const { default: zip } = await getZip()
+
+  return vfs
     .src('**/*', { base: src, cwd: src, dot: true })
     .pipe(zip.dest(ospath.join(dest, `${bundleName}-bundle.zip`)))
     .on('finish', () => onFinish && onFinish(ospath.resolve(dest, `${bundleName}-bundle.zip`)))
+}

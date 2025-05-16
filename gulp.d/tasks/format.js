@@ -1,10 +1,10 @@
 'use strict'
 
-const prettier = require('../lib/gulp-prettier-eslint')
-const vfs = require('vinyl-fs')
+import prettierPlugin from '../lib/gulp-prettier-eslint.js'
+import vfs from 'vinyl-fs'
 
-module.exports = (files) => () =>
+export default (files) => () =>
   vfs
     .src(files)
-    .pipe(prettier())
+    .pipe(prettierPlugin())
     .pipe(vfs.dest((file) => file.base))

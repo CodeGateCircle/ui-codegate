@@ -6,6 +6,7 @@
   "engines": {
     "node": ">= 22.0.0"
   },
+  "type": "module",
   "browserslist": [
     "last 2 versions"
   ],
@@ -46,6 +47,7 @@
     "require-from-string": "^2.0.2",
     "stylelint": "^16.19.1",
     "stylelint-config-standard": "^38.0.0",
+    "undertaker": "^2.0.0",
     "vinyl-fs": "^4.0.0"
   }
 }
