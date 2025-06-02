@@ -1,11 +1,11 @@
 {
-  "name": "ui-codegate",
+  "name": "@antora/ui-default",
   "description": "An archetype project that produces a UI for creating documentation sites with Antora",
-  "homepage": "https://github.com/codegatecircle/ui-codegate",
+  "homepage": "https://gitlab.com/antora/antora-ui-default",
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codegatecircle/ui-codegate.git"
+    "url": "https://gitlab.com/antora/antora-ui-default.git"
   },
   "engines": {
     "node": ">= 8.0.0"
