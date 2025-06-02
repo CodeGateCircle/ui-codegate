@@ -6,6 +6,7 @@ const concat = require("gulp-concat");
 const cssnano = require("cssnano");
 const fs = require("fs-extra");
 const imagemin = require("gulp-imagemin");
+const imageminMozjpeg = require("imagemin-mozjpeg");
 const merge = require("merge-stream");
 const ospath = require("path");
 const path = ospath.posix;
@@ -102,7 +103,7 @@ module.exports = (src, dest, preview) => () => {
         : imagemin(
             [
               imagemin.gifsicle(),
-              imagemin.jpegtran(),
+              imageminMozjpeg(),
               imagemin.optipng(),
               imagemin.svgo({
                 plugins: [

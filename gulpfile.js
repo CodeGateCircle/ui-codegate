@@ -88,13 +88,7 @@ const bundlePackTask = createTask({
 const bundleTask = createTask({
   name: "bundle",
   desc: "Clean, lint, build, and bundle the UI for publishing",
-  call: series(bundleBuildTask, bundlePackTask)
-});
-
-const packTask = createTask({
-  name: "pack",
-  desc: "(deprecated; use bundle instead)",
-  call: series(bundleTask)
+  call: series(buildTask, bundlePackTask)
 });
 
 const buildPreviewPagesTask = createTask({

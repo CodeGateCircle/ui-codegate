@@ -29,7 +29,7 @@ module.exports = () => {
     }
   });
 
-  function format(file, enc, next) {
+  async function format(file, enc, next) {
     if (file.isNull()) return next();
     if (file.isStream())
       return next(
@@ -37,7 +37,7 @@ module.exports = () => {
       );
 
     const input = file.contents.toString();
-    const output = prettierEslint({ text: input, filePath: file.path });
+    const output = await prettierEslint({ text: input, filePath: file.path });
 
     if (input === output) {
       report.unchanged += 1;
