@@ -61,12 +61,7 @@ module.exports = (src, dest, preview) => () => {
     postcssVar({ preserve: preview }),
     preview ? postcssCalc : () => {},
     autoprefixer,
-    preview
-      ? () => {}
-      : (css, result) =>
-          cssnano({ preset: "default" })(css, result).then(() =>
-            postcssPseudoElementFixer(css, result)
-          )
+    preview ? () => {} : cssnano({ preset: "default" })
   ];
 
   function bundle({ base: basedir, ext: bundleExt = ".bundle.js" }) {
@@ -114,7 +109,7 @@ module.exports = (src, dest, preview) => () => {
   }
 
   return merge(
-    vfs.src("ui.yml", { ...opts, allowEmpty: true }),
+    // vfs.src("ui.yml", { ...opts, allowEmpty: true }),
     vfs
       .src("js/+([0-9])-*.js", { ...opts, read: false, sourcemaps })
       .pipe(bundle(opts))
@@ -134,32 +129,32 @@ module.exports = (src, dest, preview) => () => {
     vfs
       .src(["css/site.css", "css/vendor/*.css"], { ...opts, sourcemaps })
       .pipe(postcss(file => ({ plugins: postcssPlugins, options: { file } }))),
-    vfs.src("font/*.{ttf,woff*(2)}", opts),
-    vfs.src("img/**/*.{gif,ico,jpg,png,svg}", opts).pipe(
-      preview
-        ? through()
-        : imagemin(
-            [
-              imagemin.gifsicle(),
-              imageminMozjpeg(),
-              imagemin.optipng(),
-              imagemin.svgo({
-                plugins: [
-                  { cleanupIDs: { preservePrefixes: ["icon-", "view-"] } },
-                  { removeViewBox: false },
-                  { removeDesc: false }
-                ]
-              })
-            ].reduce((accum, it) => (it ? accum.concat(it) : accum), [])
-          )
-    ),
-    vfs.src("helpers/*.js", opts),
-    vfs.src("layouts/*.hbs", opts),
-    vfs.src("partials/*.hbs", opts),
-    vfs.src("static/**/*[!~]", {
-      ...opts,
-      base: ospath.join(src, "static"),
-      dot: true
-    })
+    // vfs.src("font/*.{ttf,woff*(2)}", opts),
+    // vfs.src("img/**/*.{gif,ico,jpg,png,svg}", opts).pipe(
+    //   preview
+    //     ? through()
+    //     : imagemin(
+    //         [
+    //           imagemin.gifsicle(),
+    //           imageminMozjpeg(),
+    //           imagemin.optipng(),
+    //           imagemin.svgo({
+    //             plugins: [
+    //               { cleanupIDs: { preservePrefixes: ["icon-", "view-"] } },
+    //               { removeViewBox: false },
+    //               { removeDesc: false }
+    //             ]
+    //           })
+    //         ].reduce((accum, it) => (it ? accum.concat(it) : accum), [])
+    //       )
+    // ),
+    // vfs.src("helpers/*.js", opts),
+    // vfs.src("layouts/*.hbs", opts),
+    // vfs.src("partials/*.hbs", opts),
+    // vfs.src("static/**/*[!~]", {
+    //   ...opts,
+    //   base: ospath.join(src, "static"),
+    //   dot: true
+    // })
   ).pipe(vfs.dest(dest, { sourcemaps: sourcemaps && "." }));
 };
