@@ -232,3 +232,7 @@ See link:LICENSE[] to find the full license text.
 == Authors
 
 Development of Antora is led and sponsored by Codegate Circle.
+
+== caution
+
+* install `cssnano` and `gulp-cssnano`
