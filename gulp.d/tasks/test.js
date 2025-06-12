@@ -105,6 +105,7 @@ module.exports = (src, dest, preview) => () => {
     });
   }
 
+
   function postcssPseudoElementFixer(css, result) {
     css.walkRules(/(?:^|[^:]):(?:before|after)/, rule => {
       rule.selector = rule.selectors
