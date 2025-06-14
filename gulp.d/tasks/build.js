@@ -111,6 +111,27 @@ module.exports = (src, dest, preview) => () => {
   return merge(
     // vfs.src("ui.yml", { ...opts, allowEmpty: true }),
     vfs
+      .src("font/*.{ttf,woff*(2)}", { ...opts, allowEmpty: true })
+      .pipe(through((file, env, next) => {
+        console.log(file);
+        next(null, file);
+      })),
+    vfs.src("helpers/*.js", { ...opts, allowEmpty: true })
+      .pipe(through((file, env, next) => {
+        console.log(file);
+        next(null, file);
+      })),
+    vfs.src("layouts/*.hbs", { ...opts, allowEmpty: true })
+      .pipe(through((file, env, next) => {
+        console.log(file);
+        next(null, file);
+      })),
+    vfs.src("partials/*.hbs", { ...opts, allowEmpty: true })
+      .pipe(through((file, env, next) => {
+        console.log(file);
+        next(null, file);
+      })),
+    vfs
       .src("js/+([0-9])-*.js", { ...opts, read: false, sourcemaps })
       .pipe(bundle(opts))
       .pipe(uglify({ ie: true, module: false, output: { comments: /^! / } }))
@@ -129,32 +150,34 @@ module.exports = (src, dest, preview) => () => {
     vfs
       .src(["css/site.css", "css/vendor/*.css"], { ...opts, sourcemaps })
       .pipe(postcss(file => ({ plugins: postcssPlugins, options: { file } }))),
-    // vfs.src("font/*.{ttf,woff*(2)}", opts),
-    // vfs.src("img/**/*.{gif,ico,jpg,png,svg}", opts).pipe(
-    //   preview
-    //     ? through()
-    //     : imagemin(
-    //         [
-    //           imagemin.gifsicle(),
-    //           imageminMozjpeg(),
-    //           imagemin.optipng(),
-    //           imagemin.svgo({
-    //             plugins: [
-    //               { cleanupIDs: { preservePrefixes: ["icon-", "view-"] } },
-    //               { removeViewBox: false },
-    //               { removeDesc: false }
-    //             ]
-    //           })
-    //         ].reduce((accum, it) => (it ? accum.concat(it) : accum), [])
-    //       )
-    // ),
-    // vfs.src("helpers/*.js", opts),
-    // vfs.src("layouts/*.hbs", opts),
-    // vfs.src("partials/*.hbs", opts),
-    // vfs.src("static/**/*[!~]", {
-    //   ...opts,
-    //   base: ospath.join(src, "static"),
-    //   dot: true
-    // })
+    vfs
+      .src("img/**/*.{gif,ico,jpg,png,svg}", opts)
+      .pipe(
+        preview
+          ? through()
+          : imagemin(
+              [
+                imagemin.gifsicle(),
+                imageminMozjpeg(),
+                imagemin.optipng(),
+                imagemin.svgo({
+                  plugins: [
+                    { cleanupIDs: { preservePrefixes: ["icon-", "view-"] } },
+                    { removeViewBox: false },
+                    { removeDesc: false }
+                  ]
+                })
+              ].reduce((accum, it) => (it ? accum.concat(it) : accum), [])
+            )
+      ),
+    vfs.src("static/**/*[!~]", {
+      ...opts,
+      base: ospath.join(src, "static"),
+      dot: true
+    })
+      .pipe(through((file, env, next) => {
+        console.log(file);
+        next(null, file);
+      })),
   ).pipe(vfs.dest(dest, { sourcemaps: sourcemaps && "." }));
 };
